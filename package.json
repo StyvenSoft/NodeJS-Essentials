@@ -1,0 +1,28 @@
+{
+  "name": "nodejs-essentials",
+  "version": "1.0.0",
+  "description": "Curso de node JS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./http-module/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StyvenSoft/NodeJS-Essentials.git"
+  },
+  "keywords": [
+    "Node",
+    "JS"
+  ],
+  "author": "Steveen Echeverri",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/StyvenSoft/NodeJS-Essentials/issues"
+  },
+  "homepage": "https://github.com/StyvenSoft/NodeJS-Essentials#readme",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "express": "^4.17.1"
+  }
+}
