@@ -7,8 +7,13 @@ app.use(express.static('public'));
 
 // Open a call to `app.get()` below:
 app.get('/expressions', (req, res, next) => {
-     // console.log(req);
-    res.send(expressions);
+  // console.log(req);
+  res.send(expressions);
+});
+
+app.get('/expressions/:id', (req, res, next) => {
+    const foundExpression = getElementById(req.params.id, expressions);
+    res.send(foundExpression);
 });
 
 app.listen(PORT, () => {
