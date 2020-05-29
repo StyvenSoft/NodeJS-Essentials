@@ -10,5 +10,9 @@
 ---
 
 [Documentación NodeJS](https://nodejs.org/es/docs/)
+
 [NPM](https://www.npmjs.com/)
+
 [ExpressJS](https://expressjs.com/es/)
+
+[What is REST?](https://www.codecademy.com/paths/web-development/tracks/javascript-back-end-development/modules/learn-express-create-a-server/articles/what-is-rest)
