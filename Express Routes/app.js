@@ -30,6 +30,26 @@ app.put('/expressions/:id', (req, res, next) =>{
   }
 });
 
+app.post('/expressions', (req, res, next) => {
+  const receivedExpression = createElement('expressions', req.query);
+  if (receivedExpression) {
+    expressions.push(receivedExpression);
+    res.status(201).send(receivedExpression);
+  } else {
+    res.status(400).send();
+  }
+});
+
+app.delete('/expressions/:id', (req, res, next) => {
+  const expressionIndex = getIndexById(req.params.id, expressions);
+  if (expressionIndex !== -1) {
+    expressions.splice(expressionIndex, 1);
+    res.status(204).send();
+  } else {
+    res.status(404).send();
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
 });
