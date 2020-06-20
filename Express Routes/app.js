@@ -8,17 +8,20 @@ const PORT = process.env.PORT || 4001;
 // Use static server to serve the Express Yourself Website
 app.use(express.static('public'));
 
-const expressions = [];
-seedElements(expressions, 'expressions');
-const animals = [];
+let animals = [];
 seedElements(animals, 'animals');
 
-// Open a call to `app.get()` below:
-app.get('/expressions', (req, res, next) => {
-  // console.log(req);
-  res.send(expressions);
-});
+const expressionsRouter = require('./expressions.js');
 
+// const expressionsRouter = express.Router();
+app.use('/expressions', expressionsRouter);
+
+// // Get all expressions
+// expressionsRouter.get('/', (req, res, next) => {
+//   res.send(expressions);
+// });
+
+// Get a single expression
 app.get('/expressions/:id', (req, res, next) => {
     const foundExpression = getElementById(req.params.id, expressions);
     if (foundExpression) {
@@ -27,7 +30,7 @@ app.get('/expressions/:id', (req, res, next) => {
       res.status(404).send('Expression not found');
     }
 });
-
+// Update an expression
 app.put('/expressions/:id', (req, res, next) =>{
   const expressionIndex = getIndexById(req.params.id, expressions);
   if (expressionIndex !== -1) {
@@ -37,7 +40,7 @@ app.put('/expressions/:id', (req, res, next) =>{
     res.status(404).send();
   }
 });
-
+// Create an expression
 app.post('/expressions', (req, res, next) => {
   const receivedExpression = createElement('expressions', req.query);
   if (receivedExpression) {
@@ -47,7 +50,7 @@ app.post('/expressions', (req, res, next) => {
     res.status(400).send();
   }
 });
-
+// Delete an expression
 app.delete('/expressions/:id', (req, res, next) => {
   const expressionIndex = getIndexById(req.params.id, expressions);
   if (expressionIndex !== -1) {
