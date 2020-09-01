@@ -35,6 +35,17 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use('/beans/:beanName', (req, res, next) => {
+    const beanName = req.params.beanName;
+    if (!jellybeanBag[beanName]) {
+        console.log('Response Sent');
+        return res.status(404).send('Bean with that name does not exist');
+    }
+    req.bean = jellybeanBag[beanName];
+    req.beanName = beanName;
+    next();
+});
+
 app.get('/beans/', (req, res, next) => {
     console.log('GET Request Received');
     res.send(jellybeanBag);
@@ -65,11 +76,6 @@ app.post('/beans/', (req, res, next) => {
 
 app.get('/beans/:beanName', (req, res, next) => {
     console.log('GET Request Received');
-    const beanName = req.params.beanName;
-    if (!jellybeanBag[beanName]) {
-        console.log('Response Sent');
-        return res.status(404).send('Bean with that name does not exist');
-    }
     res.send(jellybeanBag[beanName]);
     console.log('Response Sent');
 });
@@ -77,10 +83,6 @@ app.get('/beans/:beanName', (req, res, next) => {
 
 app.post('/beans/:beanName/add', (req, res, next) => {
     console.log('POST Request Received');
-    const beanName = req.params.beanName;
-    if (!jellybeanBag[beanName]) {
-        return res.status(404).send('Bean with that name does not exist');
-    }
     let queryData = '';
     req.on('data', (data) => {
         queryData += data;
@@ -96,10 +98,6 @@ app.post('/beans/:beanName/add', (req, res, next) => {
 
 app.post('/beans/:beanName/remove', (req, res, next) => {
     console.log('POST Request Received');
-    const beanName = req.params.beanName;
-    if (!jellybeanBag[beanName]) {
-        return res.status(404).send('Bean with that name does not exist');
-    }
     let queryData = '';
     req.on('data', (data) => {
         queryData += data;
@@ -110,21 +108,32 @@ app.post('/beans/:beanName/remove', (req, res, next) => {
         if (jellybeanBag[beanName].number < numberOfBeans) {
             return res.status(400).send('Not enough beans in the jar to remove!');
         }
-        jellybeanBag[beanName].number -= numberOfBeans;
-        res.send(jellybeanBag[beanName]);
+        req.bean.number -= numberOfBeans;
+        res.send(req.bean);
         console.log('Response Sent');
     });
 });
 
 app.delete('/beans/:beanName', (req, res, next) => {
     console.log('DELETE Request Received');
-    const beanName = req.params.beanName;
-    if (!jellybeanBag[beanName]) {
-        return res.status(404).send('Bean with that name does not exist');
-    }
-    jellybeanBag[beanName] = null;
+    req.bean = null;
     res.status(204).send();
     console.log('Response Sent');
+});
+
+app.put('/beans/:beanName/name', (req, res, next) => {
+    let bodyData = '';
+    req.on('data', (data) => {
+        bodyData += data;
+    });
+
+    req.on('end', () => {
+        const newName = JSON.parse(bodyData).name;
+        jellybeanBag[newName] = jellybeanBag[req.beanName];
+        jellybeanBag[req.beanName] = null;
+        res.send(jellybeanBag[newName]);
+        console.log('Response Sent');
+    });
 });
 
 app.listen(PORT, () => {
