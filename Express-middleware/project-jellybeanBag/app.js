@@ -46,7 +46,7 @@ app.use('/beans/:beanName', (req, res, next) => {
     next();
 });
 
-app.use(['/beans/', '/beans/:beanName'], (req, res, next) => {
+const bodyParser = (req, res, next) => {
     let bodyData = '';
     req.on('data', (data) => {
         bodyData += data;
@@ -57,7 +57,7 @@ app.use(['/beans/', '/beans/:beanName'], (req, res, next) => {
         }
         next();
     });
-});
+};
 
 app.get('/beans/', (req, res, next) => {
     console.log('GET Request Received');
@@ -65,7 +65,7 @@ app.get('/beans/', (req, res, next) => {
     console.log('Response Sent');
 });
 
-app.post('/beans/', (req, res, next) => {
+app.post('/beans/', bodyParser, (req, res, next) => {
     console.log('POST Request Received');
     const body = req.body;
     const beanName = body.name;
@@ -87,7 +87,7 @@ app.get('/beans/:beanName', (req, res, next) => {
 });
 
 
-app.post('/beans/:beanName/add', (req, res, next) => {
+app.post('/beans/:beanName/add', bodyParser, (req, res, next) => {
     console.log('POST Request Received');
     const numberOfBeans = Number(req.body.number) || 0;
     req.bean.number += numberOfBeans;
@@ -95,7 +95,7 @@ app.post('/beans/:beanName/add', (req, res, next) => {
     console.log('Response Sent');
 });
 
-app.post('/beans/:beanName/remove', (req, res, next) => {
+app.post('/beans/:beanName/remove', bodyParser, (req, res, next) => {
     console.log('POST Request Received');
     const numberOfBeans = Number(req.body.number) || 0;
     if (req.bean.number < numberOfBeans) {
