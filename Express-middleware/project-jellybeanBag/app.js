@@ -2,6 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const app = express();
 const bodyParser = require('body-parser');
+const errorHandler = require('errorhandler')
+app.use(errorHandler());
 
 app.use(express.static('public'));
 
@@ -30,7 +32,7 @@ app.use(bodyParser.json());
 
 // Logging Middleware
 if (!process.env.IS_TEST_ENV) {
-  app.use(morgan('dev'));
+    app.use(morgan('dev'));
 }
 
 app.use('/beans/:beanName', (req, res, next) => {
@@ -44,26 +46,12 @@ app.use('/beans/:beanName', (req, res, next) => {
     next();
 });
 
-const bodyParser = (req, res, next) => {
-    let queryData = '';
-    req.on('data', (data) => {
-        data = data.toString();
-        queryData += data;
-    });
-    req.on('end', () => {
-        if (queryData) {
-            req.body = JSON.parse(queryData);
-        }
-        next();
-    });
-};
 
 app.get('/beans/', (req, res, next) => {
     res.send(jellybeanBag);
 });
 
-app.post('/beans/', bodyParser, (req, res, next) => {
-    console.log('POST Request Received');
+app.post('/beans/', (req, res, next) => {
     const body = req.body;
     const beanName = body.name;
     if (jellybeanBag[beanName] || jellybeanBag[beanName] === 0) {
@@ -82,14 +70,14 @@ app.get('/beans/:beanName', (req, res, next) => {
 });
 
 
-app.post('/beans/:beanName/add', bodyParser, (req, res, next) => {
+app.post('/beans/:beanName/add', (req, res, next) => {
     console.log('POST Request Received');
     const numberOfBeans = Number(req.body.number) || 0;
     req.bean.number += numberOfBeans;
     res.send(req.bean);
 });
 
-app.post('/beans/:beanName/remove', bodyParser, (req, res, next) => {
+app.post('/beans/:beanName/remove', (req, res, next) => {
     console.log('POST Request Received');
     const numberOfBeans = Number(req.body.number) || 0;
     if (req.bean.number < numberOfBeans) {
@@ -105,20 +93,20 @@ app.delete('/beans/:beanName', (req, res, next) => {
     res.status(204).send();
 });
 
-// app.put('/beans/:beanName/name', (req, res, next) => {
-//     const beanName = req.beanName;
-//     const newName = req.body.name;
-//     jellybeanBag[newName] = req.bean;
-//     jellybeanBag[beanName] = null;
-//     res.send(jellybeanBag[newName]);
-// });
+app.put('/beans/:beanName/name', (req, res, next) => {
+    const beanName = req.beanName;
+    const newName = req.body.name;
+    jellybeanBag[newName] = req.bean;
+    jellybeanBag[beanName] = null;
+    res.send(jellybeanBag[newName]);
+});
 
 app.use((err, req, res, next) => {
     if (!err.status) {
-      err.status = 500;
+        err.status = 500;
     }
     res.status(err.status).send(err.message);
-  });
+});
 
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);

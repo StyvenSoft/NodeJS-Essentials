@@ -1,0 +1,25 @@
+{
+  "name": "project-jellybeanbag",
+  "version": "1.0.0",
+  "description": "Learn express middleware",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StyvenSoft/NodeJS-Essentials.git"
+  },
+  "author": "Steveen Echeverr",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/StyvenSoft/NodeJS-Essentials/issues"
+  },
+  "homepage": "https://github.com/StyvenSoft/NodeJS-Essentials#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "errorhandler": "^1.5.1",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0"
+  }
+}
