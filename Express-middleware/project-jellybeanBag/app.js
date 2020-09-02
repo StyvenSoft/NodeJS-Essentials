@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const app = express();
+const bodyParser = require('body-parser');
 
 app.use(express.static('public'));
 
@@ -24,12 +25,13 @@ const jellybeanBag = {
     }
 };
 
-// Add your logging function here:
-// const logRequest = verb => {
-//     console.log(`${verb} Request Received`);
-// }
+// Body-parsing Middleware
+app.use(bodyParser.json());
 
-app.use(morgan('tiny'));
+// Logging Middleware
+if (!process.env.IS_TEST_ENV) {
+  app.use(morgan('dev'));
+}
 
 app.use('/beans/:beanName', (req, res, next) => {
     const beanName = req.params.beanName;
@@ -76,7 +78,7 @@ app.post('/beans/', bodyParser, (req, res, next) => {
 
 app.get('/beans/:beanName', (req, res, next) => {
     console.log('GET Request Received');
-    res.send(jellybeanBag[beanName]);
+    res.send(req.bean);
 });
 
 
@@ -103,13 +105,20 @@ app.delete('/beans/:beanName', (req, res, next) => {
     res.status(204).send();
 });
 
-app.put('/beans/:beanName/name', (req, res, next) => {
-    const beanName = req.beanName;
-    const newName = req.body.name;
-    jellybeanBag[newName] = req.bean;
-    jellybeanBag[beanName] = null;
-    res.send(jellybeanBag[newName]);
-});
+// app.put('/beans/:beanName/name', (req, res, next) => {
+//     const beanName = req.beanName;
+//     const newName = req.body.name;
+//     jellybeanBag[newName] = req.bean;
+//     jellybeanBag[beanName] = null;
+//     res.send(jellybeanBag[newName]);
+// });
+
+app.use((err, req, res, next) => {
+    if (!err.status) {
+      err.status = 500;
+    }
+    res.status(err.status).send(err.message);
+  });
 
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
