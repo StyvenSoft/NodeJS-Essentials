@@ -23,6 +23,6 @@
   "homepage": "https://github.com/StyvenSoft/NodeJS-Essentials#readme",
   "dependencies": {
     "colors": "^1.4.0",
-    "express": "^4.18.2"
+    "express": "^4.19.2"
   }
 }
